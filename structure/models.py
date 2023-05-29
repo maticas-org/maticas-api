@@ -126,6 +126,7 @@ class Measurement(models.Model):
             default=uuid.uuid4,
             editable=False
             )
+    datetime = models.DateTimeField(auto_now_add=True)
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
     value = models.FloatField()
     variable = models.ForeignKey(Variable, on_delete=models.CASCADE)

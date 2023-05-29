@@ -12,6 +12,7 @@ class OrgAdmin(admin.ModelAdmin):
 
 class CropAdmin(admin.ModelAdmin):
     list_display = (
+            "id",
             "name",
             "org",
             "coordinate_latitude",
@@ -20,6 +21,7 @@ class CropAdmin(admin.ModelAdmin):
 
 class VariableAdmin(admin.ModelAdmin):
     list_display = (
+            "id",
             "name",
             "units",
             "description",
@@ -27,6 +29,7 @@ class VariableAdmin(admin.ModelAdmin):
 
 class ConditionAdmin(admin.ModelAdmin):
     list_display = (
+            "id",
             "crop",
             "variable",
             "min_value",
@@ -35,12 +38,14 @@ class ConditionAdmin(admin.ModelAdmin):
 
 class Actuator_typeAdmin(admin.ModelAdmin):
     list_display = (
+            "id",
             "name",
             "description",
             )
 
 class ActuatorAdmin(admin.ModelAdmin):
     list_display = (
+            "id",
             "name",
             "mqtt_topic",
             "crop",
@@ -49,6 +54,8 @@ class ActuatorAdmin(admin.ModelAdmin):
 
 class MeasurementAdmin(admin.ModelAdmin):
     list_display = (
+            "datetime",
+            "id",
             "crop",
             "value",
             "variable",
@@ -56,7 +63,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 
 class PermissionAdmin(admin.ModelAdmin):
     list_display = (
-            "_id",
+            "id",
             "user",
             "org",
             "crop",

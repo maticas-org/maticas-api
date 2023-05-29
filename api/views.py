@@ -6,21 +6,154 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from django.contrib.auth.models import User
-from structure.models import Org
+from structure.models import *
 
 from .serializers import *
 
 
+# ===================
+# ==== Org related ==
+# ===================
 class OrgAPICreate(generics.CreateAPIView):
     queryset = Org.objects.all()
     serializer_class = OrgSerializer
-
 
 class OrgAPIDetail(generics.RetrieveAPIView):
     queryset = Org.objects.all()
     serializer_class = OrgSerializerRestricted
 
+class OrgAPIDetailModify(generics.RetrieveUpdateAPIView):
+    queryset = Org.objects.all()
+    serializer_class = OrgSerializer
 
+class OrgAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    queryset = Org.objects.all()
+    serializer_class = OrgSerializerFullRestricted
+
+
+# ====================
+# ==== Crop related ==
+# ====================
+class CropAPICreate(generics.CreateAPIView):
+    queryset = Crop.objects.all()
+    serializer_class = CropSerializer
+
+class CropAPIDetail(generics.RetrieveAPIView):
+    queryset = Crop.objects.all()
+    serializer_class = CropSerializer
+
+class CropAPIDetailModify(generics.RetrieveUpdateAPIView):
+    queryset = Crop.objects.all()
+    serializer_class = CropSerializer
+
+class CropAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    queryset = Crop.objects.all()
+    serializer_class = CropSerializerFullRestricted
+
+
+# =============================
+# ==== Actuator_type related ==
+# =============================
+class Actuator_typeAPICreate(generics.CreateAPIView):
+    queryset = Actuator_type.objects.all()
+    serializer_class = Actuator_typeSerializer
+
+class Actuator_typeAPIDetail(generics.RetrieveAPIView):
+    queryset = Actuator_type.objects.all()
+    serializer_class = Actuator_typeSerializer
+
+class Actuator_typeAPIDetailModify(generics.RetrieveUpdateAPIView):
+    queryset = Actuator_type.objects.all()
+    serializer_class = Actuator_typeSerializer
+
+class Actuator_typeAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    queryset = Actuator_type.objects.all()
+    serializer_class = Actuator_typeSerializerFullRestricted
+
+
+# ========================
+# ==== Actuator related ==
+# ========================
+class ActuatorAPICreate(generics.CreateAPIView):
+    queryset = Actuator.objects.all()
+    serializer_class = ActuatorSerializer
+
+class ActuatorAPIDetail(generics.RetrieveAPIView):
+    queryset = Actuator.objects.all()
+    serializer_class = ActuatorSerializer
+
+class ActuatorAPIDetailModify(generics.RetrieveUpdateAPIView):
+    queryset = Actuator.objects.all()
+    serializer_class = ActuatorSerializer
+
+class ActuatorAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    queryset = Actuator.objects.all()
+    serializer_class = ActuatorSerializerFullRestricted
+
+
+# =========================
+# ==== Condition related ==
+# =========================
+class ConditionAPICreate(generics.CreateAPIView):
+    queryset = Condition.objects.all()
+    serializer_class = ConditionSerializer
+
+class ConditionAPIDetail(generics.RetrieveAPIView):
+    queryset = Condition.objects.all()
+    serializer_class = ConditionSerializer
+
+class ConditionAPIDetailModify(generics.RetrieveUpdateAPIView):
+    queryset = Condition.objects.all()
+    serializer_class = ConditionSerializer
+
+class ConditionAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    queryset = Condition.objects.all()
+    serializer_class = ConditionSerializerFullRestricted
+
+
+# ===========================
+# ==== Measurement related ==
+# ===========================
+class MeasurementAPICreate(generics.CreateAPIView):
+    queryset = Measurement.objects.all()
+    serializer_class = MeasurementSerializer
+
+class MeasurementAPIDetail(generics.RetrieveAPIView):
+    queryset = Measurement.objects.all()
+    serializer_class = MeasurementSerializer
+
+class MeasurementAPIDetailModify(generics.RetrieveUpdateAPIView):
+    queryset = Measurement.objects.all()
+    serializer_class = MeasurementSerializer
+
+class MeasurementAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    queryset = Measurement.objects.all()
+    serializer_class = MeasurementSerializerFullRestricted
+
+
+# ========================
+# ==== Variable related ==
+# ========================
+class VariableAPICreate(generics.CreateAPIView):
+    queryset = Variable.objects.all()
+    serializer_class = VariableSerializer
+
+class VariableAPIDetail(generics.RetrieveAPIView):
+    queryset = Variable.objects.all()
+    serializer_class = VariableSerializer
+
+class VariableAPIDetailModify(generics.RetrieveUpdateAPIView):
+    queryset = Variable.objects.all()
+    serializer_class = VariableSerializer
+
+class VariableAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    queryset = Variable.objects.all()
+    serializer_class = VariableSerializerFullRestricted
+
+
+# ====================
+# ==== User related ==
+# ====================
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.0.4" use-changelog="false" last-position="0,333" last-zoom="1.05" max-obj-count="8"
+	 default-schema="public" default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<database name="new_database" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="Org" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1100" y="420"/>
+	<column name="id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="char" length="50"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="password" not-null="true">
+		<type name="char" length="64"/>
+	</column>
+	<constraint name="orgs_pk" type="pk-constr" table="public.&quot;Org&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Crop" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="640" y="380"/>
+	<column name="id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="char" length="50"/>
+	</column>
+	<column name="coordinate_latitude" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<column name="coordinate_longitude" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<constraint name="Crop_pk" type="pk-constr" table="public.&quot;Crop&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_Org" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="Org_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="orgs_has_many_Crop" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#12a175"
+	 src-table="public.&quot;Org&quot;"
+	 dst-table="public.&quot;Crop&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="3.88146" y="-73.7907"/>
+	</label>
+</relationship>
+
+<table name="Variable" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="100" y="80"/>
+	<column name="id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="char" length="50"/>
+	</column>
+	<column name="units" not-null="true">
+		<type name="char" length="20"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="Variable_pk" type="pk-constr" table="public.&quot;Variable&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Condition" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="100" y="340"/>
+	<column name="id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="min_value" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<column name="max_value" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<constraint name="Condition_pk" type="pk-constr" table="public.&quot;Condition&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_Crop" index="1"/>
+		<object name="id_Variable" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="Crop_fk" index="1"/>
+		<object name="Variable_fk" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="Crop_has_many_Condition" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#fb6c08"
+	 src-table="public.&quot;Crop&quot;"
+	 dst-table="public.&quot;Condition&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="6.57973" y="-38.0136"/>
+	</label>
+</relationship>
+
+<relationship name="Variable_has_many_Condition" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#547029"
+	 src-table="public.&quot;Variable&quot;"
+	 dst-table="public.&quot;Condition&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="114.562" y="-26.353"/>
+	</label>
+</relationship>
+
+<table name="ActuatorType" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="660" y="720"/>
+	<column name="id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="char" length="50"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="ActuatorType_pk" type="pk-constr" table="public.&quot;ActuatorType&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Actuator" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="80" y="600"/>
+	<column name="id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="char" length="50"/>
+	</column>
+	<column name="mqtt_topic" not-null="true">
+		<type name="char" length="64"/>
+	</column>
+	<constraint name="Actuator_pk" type="pk-constr" table="public.&quot;Actuator&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_ActuatorType" index="2"/>
+		<object name="id_Crop" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="ActuatorType_fk" index="2"/>
+		<object name="Crop_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="Crop_has_many_Actuator" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#56761b"
+	 src-table="public.&quot;Crop&quot;"
+	 dst-table="public.&quot;Actuator&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="3.4174" y="-23.5173"/>
+	</label>
+</relationship>
+
+<relationship name="ActuatorType_has_many_Actuator" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#d7bc5a"
+	 src-table="public.&quot;ActuatorType&quot;"
+	 dst-table="public.&quot;Actuator&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="11.947" y="-21.253"/>
+	</label>
+</relationship>
+
+<table name="Measurement" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="660" y="40"/>
+	<column name="id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="value" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<column name="datetime" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="Measurement_pk" type="pk-constr" table="public.&quot;Measurement&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_Crop" index="1"/>
+		<object name="id_Variable" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="Crop_fk" index="1"/>
+		<object name="Variable_fk" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="Crop_has_many_Measurement" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#58707b"
+	 src-table="public.&quot;Crop&quot;"
+	 dst-table="public.&quot;Measurement&quot;"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-6.66865" y="-31.253"/>
+	</label>
+</relationship>
+
+<relationship name="Variable_has_many_Measurement" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#bb9c06"
+	 src-table="public.&quot;Variable&quot;"
+	 dst-table="public.&quot;Measurement&quot;"
+	 src-required="true" dst-required="false"/>
+
+</dbmodel>

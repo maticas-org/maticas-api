@@ -56,7 +56,7 @@ class Actuator_typeSerializerFullRestricted(serializers.ModelSerializer):
 # ========================
 class ActuatorSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ( "datetime", "crop", "value", "variable",)
+        fields = ("name", "mqtt_topic", "crop", "actuator_type", "start_time", "end_time",)
         model = Actuator
 
 class ActuatorSerializerFullRestricted(serializers.ModelSerializer):
@@ -123,3 +123,6 @@ class UserSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
+
+
+

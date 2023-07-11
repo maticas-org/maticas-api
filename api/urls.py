@@ -1,15 +1,15 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 
-
 from .views import *
 
+app_name = 'api'
 urlpatterns = [
     # ==== Org related
-    path("org/new/",          OrgAPICreate.as_view(),       name="create_org"),        # POST
-    path("org/<str:pk>/",     OrgAPIDetail.as_view(),       name="orgs_detail"),       # GET
-    path("org/mod/<str:pk>/", OrgAPIDetailModify.as_view(), name="orgs_detail"),       # PUT
-    path("org/del/<str:pk>/", OrgAPIDetailDelete.as_view(), name="orgs_detail"),       # DELETE
+    path("org/new/",          OrgAPICreate.as_view(),       name="org_create"),        # POST
+    path("org/<str:pk>/",     OrgAPIDetail.as_view(),       name="org_detail"),       # GET
+    path("org/mod/<str:pk>/", OrgAPIDetailModify.as_view(), name="org_modify"),       # PUT
+    path("org/del/<str:pk>/", OrgAPIDetailDelete.as_view(), name="org_delete"),       # DELETE
 
     # ==== Crop related
     path("crop/new/",          CropAPICreate.as_view(),       name="crop_create"),     # POST
@@ -43,13 +43,15 @@ urlpatterns = [
 
     # ==== Variable related
     path("variable/new/",          VariableAPICreate.as_view(),       name="variable_create"),     # POST
-    path("variable/<str:pk>/",     VariableAPIDetail.as_view(),       name="variable_detail"),     # GET
-    path("variable/mod/<str:pk>/", VariableAPIDetailModify.as_view(), name="variable_modify"),     # PUT
-    path("variable/del/<str:pk>/", VariableAPIDetailDelete.as_view(), name="variable_delete"),     # DELETE
+    path("variable/<uuid:pk>/",     VariableAPIDetail.as_view(),       name="variable_detail"),     # GET
+    path("variable/mod/<uuid:pk>/", VariableAPIDetailModify.as_view(), name="variable_modify"),     # PUT
+    path("variable/del/<uuid:pk>/", VariableAPIDetailDelete.as_view(), name="variable_delete"),     # DELETE
 
     # ==== User related
-    path('user/new/',        CreateUserView.as_view(), name='user_create'),
-    path('user/login/',      UserLoginView.as_view(),  name='user_login'),
-    path('user/token_auth/', obtain_auth_token,        name='user_api_token_auth'),
+    path("user/new/",        CreateUserView.as_view(), name="user_create"),
+    path("user/login/",      UserLoginView.as_view(),  name="user_login"),
+    path("user/token_auth/", obtain_auth_token,        name="user_api_token_auth"),
 ]
+
+
 

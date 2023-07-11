@@ -25,9 +25,7 @@ class IsUserAllowed(permissions.BasePermission):
         is_related = self.has_permission_over_obj(request, obj)
 
         if is_related:
-
-            if request.method in permissions.SAFE_METHODS:
-                return True
+            return True
 
         return False
 
@@ -47,7 +45,7 @@ class IsUserAllowed(permissions.BasePermission):
 
             #get all the permissions a user has with granted status
             p = Permission.objects.filter(user = request.user).filter(granted = True)
-            print("user with permissions: ", p)
+            #print("user with permissions: ", p)
 
 
             #if the user is doing something over himself it's okey
@@ -64,12 +62,15 @@ class IsUserAllowed(permissions.BasePermission):
                 crop_permissions = p.filter(crop = obj)
                 return self.is_allowed(request.method, crop_permissions)
 
-            elif obj_type in [Condition, Measurement, Actuator]:
+            elif isinstance(obj, (Condition, Measurement, Actuator)):
                 #get the permissions the user has over the crop 
                 crop_permissions = p.filter(crop = obj.crop)
                 return self.is_allowed(request.method, crop_permissions)
                 
+            else:
+                return False
 
+        else:
             return False
 
 
@@ -86,25 +87,28 @@ class IsUserAllowed(permissions.BasePermission):
         permission_delete       = (permission_set.filter(permission_type__in = ['delete',]).count() >= 1)
         permission_edit_control = (permission_set.filter(permission_type__in = ['edit', 'control']).count() >= 1)
 
+        print(permission_set.filter(permission_type__in = ['edit', 'control']).count()>=1)
+        print(method)
 
         # if he has the assign permission_set then he is boss
         if permission_assign:
             return True
 
-        if permission_view and (method in permissions.SAFE_METHODS):
+        elif permission_view and (method in permissions.SAFE_METHODS):
             return True
 
-        if permission_add and (method in permissions.SAFE_METHODS + ('POST',)):
+        elif permission_add and (method in permissions.SAFE_METHODS + ('POST',)):
             return True
 
-        if permission_delete and (method in permissions.SAFE_METHODS + ('DELETE',)):
+        elif permission_delete and (method in permissions.SAFE_METHODS + ('DELETE',)):
             return True
 
-        if permission_edit_control and (method in permissions.SAFE_METHODS + ('PATCH', 'PUT')):
+        elif permission_edit_control and (method in permissions.SAFE_METHODS + ('PATCH', 'PUT',)):
+            print("HAS PERMISSION")
             return True
 
-
-        return False
+        else:
+            return False
 
 
     def is_first_time(self, method, permission_set) -> bool:

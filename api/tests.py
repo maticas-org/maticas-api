@@ -9,8 +9,6 @@ from structure.models import *
 random.seed(69)
 
 
-
-
 def generate_text(lenght = 10):
 
     return ''.join(random.choices(string.ascii_lowercase, k=lenght))
@@ -19,10 +17,12 @@ def generate_text(lenght = 10):
 #class to avoid repeating my self so much 
 class CustomBaseTestCase(APITestCase):
 
+
     def setUp(self):
 
         self.user_password = 'testpassword'
         self.admin_password = 'adminpassword'
+        self.org_password = 'testpassword'
 
         # Create admin user
         # Create an admin user
@@ -44,7 +44,7 @@ class CustomBaseTestCase(APITestCase):
         self.org = Org.objects.create(
             name        = 'Test Organization',
             description = 'Test organization description',
-            password    = 'testpassword'
+            password    = self.org_password
         )
 
         # Create a test crop
@@ -123,15 +123,12 @@ class CustomBaseTestCase(APITestCase):
         self.client.logout()
         self.client.login(username = self.admin_user.username, password = self.admin_password)
 
-    def login_as_other_user(self):
+    def login_as_other_user(self, user_num = 0):
 
         self.client.logout()
-        self.client.force_login(user = self.data[0]["user"])
+        self.client.force_login(user = self.data[user_num]["user"])
         
-
-
-
-    def create_some_data(self, ndata = 1):
+    def create_some_data(self, ndata = 2):
 
         self.data = {}
 
@@ -209,6 +206,9 @@ class CustomBaseTestCase(APITestCase):
             )
 
             self.data[i] = gen
+
+
+
 
 #==========================================================================
 #                       User Endpoint Tests
@@ -545,6 +545,7 @@ class OrganizationEndpointCRUD(CustomBaseTestCase):
 
         response = self.client.post( url, data = args1  ) 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.client.logout()
 
     def test_org_detail(self):
 
@@ -564,8 +565,45 @@ class OrganizationEndpointCRUD(CustomBaseTestCase):
         self.login_as_other_user()
         response = self.client.get(url) 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+        self.client.logout()
 
+    def test_org_modification(self):
+
+        """
+            Test modifiying an actuator type
+        """
+
+        print("problematic functiooooooOOOOOON")
+        other_user = 0
+
+        args1 = {"pk": str(self.org.id)}
+        args2 = {"name": "super crazy org",
+                 "description": "super duper crazy org",
+                 "password": self.org_password}
+
+        url = reverse("api:org_modify", kwargs = args1)
+
+        #try to get the variable as an anonymous user
+        #response = self.client.put( url, data = args2 ) 
+        #self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        #try to modify the org as a user which does not belong to the org
+        #self.login_as_other_user(other_user)
+        #response = self.client.put( url, data = args2 ) 
+        #self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        #try to modify the org as a user belonging to the org
+        self.login_as_normal_user()
+
+        response = self.client.get( url ) 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        prev = Org.objects.all()
+        response = self.client.put( url, data = args2, format='json') 
+        after = Org.objects.all()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.logout()
 
 
 

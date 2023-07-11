@@ -4,6 +4,7 @@ from .models import *
 
 
 class ModelTestCase(TestCase):
+
     def setUp(self):
         # Create a test user
         self.user = User.objects.create_user(
@@ -73,19 +74,36 @@ class ModelTestCase(TestCase):
             granted=True
         )
 
+
     def test_org_model(self):
+        """
+            Tests if the organization has been saved and the __str__ overload is working
+        """
         org = Org.objects.get(name='Test Organization')
         self.assertEqual(str(org), f"{org.id}.{org.name}")
 
     def test_crop_model(self):
+
+        """
+            Tests if the crop has been saved and the __str__ overload is working
+        """
         crop = Crop.objects.get(name='Test Crop')
         self.assertEqual(str(crop), crop.name)
 
+
     def test_variable_model(self):
+
+        """
+            Tests if the variable has been saved and the __str__ overload is working
+        """
         variable = Variable.objects.get(name='Test Variable')
         self.assertEqual(str(variable), f"{variable.name}.{variable.units}")
 
     def test_condition_model(self):
+
+        """
+            Tests if the condition has been saved and the __str__ overload is working
+        """
         condition = Condition.objects.get(crop=self.crop, variable=self.variable)
         self.assertEqual(
             str(condition),
@@ -93,10 +111,17 @@ class ModelTestCase(TestCase):
         )
 
     def test_actuator_type_model(self):
+        """
+            Tests if the actuator_type has been saved and the __str__ overload is working
+        """
         actuator_type = Actuator_type.objects.get(name='Test Actuator Type')
         self.assertEqual(str(actuator_type), actuator_type.name)
 
     def test_actuator_model(self):
+
+        """
+            Tests if the actuator has been saved and the __str__ overload is working
+        """
         actuator = Actuator.objects.get(name='Test Actuator')
         self.assertEqual(
             str(actuator),
@@ -104,6 +129,10 @@ class ModelTestCase(TestCase):
         )
 
     def test_measurement_model(self):
+
+        """
+            Tests if the actuator has been saved and the __str__ overload is working
+        """
         measurement = Measurement.objects.get(value=50)
         self.assertEqual(
             str(measurement),
@@ -111,6 +140,10 @@ class ModelTestCase(TestCase):
         )
 
     def test_permission_model(self):
+
+        """
+            Tests if the permission has been saved and the __str__ overload is working
+        """
         permission = Permission.objects.get(permission_type='edit')
         self.assertEqual(
             str(permission),

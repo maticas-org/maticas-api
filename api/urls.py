@@ -7,21 +7,21 @@ app_name = 'api'
 urlpatterns = [
     # ==== Org related
     path("org/new/",          OrgAPICreate.as_view(),       name="org_create"),        # POST
-    path("org/<str:pk>/",     OrgAPIDetail.as_view(),       name="org_detail"),       # GET
-    path("org/mod/<str:pk>/", OrgAPIDetailModify.as_view(), name="org_modify"),       # PUT
-    path("org/del/<str:pk>/", OrgAPIDetailDelete.as_view(), name="org_delete"),       # DELETE
+    path("org/<uuid:pk>/",     OrgAPIDetail.as_view(),       name="org_detail"),       # GET
+    path("org/mod/<uuid:pk>/", OrgAPIDetailModify.as_view(), name="org_modify"),       # PUT
+    path("org/del/<uuid:pk>/", OrgAPIDetailDelete.as_view(), name="org_delete"),       # DELETE
 
     # ==== Crop related
-    path("crop/new/",          CropAPICreate.as_view(),       name="crop_create"),     # POST
-    path("crop/<str:pk>/",     CropAPIDetail.as_view(),       name="crop_detail"),     # GET
-    path("crop/mod/<str:pk>/", CropAPIDetailModify.as_view(), name="crop_modify"),     # PUT
-    path("crop/del/<str:pk>/", CropAPIDetailDelete.as_view(), name="crop_delete"),     # DELETE
+    path("crop/new/",          CropAPICreate.as_view(),       name="crop_create"),      # POST
+    path("crop/<uuid:pk>/",     CropAPIDetail.as_view(),       name="crop_detail"),     # GET
+    path("crop/mod/<uuid:pk>/", CropAPIDetailModify.as_view(), name="crop_modify"),     # PUT
+    path("crop/del/<uuid:pk>/", CropAPIDetailDelete.as_view(), name="crop_delete"),     # DELETE
 
     # ==== Actuator related
-    path("actuator/new/",          ActuatorAPICreate.as_view(),       name="actuator_create"),     # POST
-    path("actuator/<str:pk>/",     ActuatorAPIDetail.as_view(),       name="actuator_detail"),     # GET
-    path("actuator/mod/<str:pk>/", ActuatorAPIDetailModify.as_view(), name="actuator_modify"),     # PUT
-    path("actuator/del/<str:pk>/", ActuatorAPIDetailDelete.as_view(), name="actuator_delete"),     # DELETE
+    path("actuator/new/",          ActuatorAPICreate.as_view(),       name="actuator_create"),      # POST
+    path("actuator/<uuid:pk>/",     ActuatorAPIDetail.as_view(),       name="actuator_detail"),     # GET
+    path("actuator/mod/<uuid:pk>/", ActuatorAPIDetailModify.as_view(), name="actuator_modify"),     # PUT
+    path("actuator/del/<uuid:pk>/", ActuatorAPIDetailDelete.as_view(), name="actuator_delete"),     # DELETE
 
     # ==== Actuator_type related
     path("actuatortype/new/",          Actuator_typeAPICreate.as_view(),       name="actuatortype_create"),     # POST

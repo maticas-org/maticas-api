@@ -14,17 +14,21 @@ from django.utils import timezone
 
 
 class Org(models.Model):
-    id = models.UUIDField(
-            primary_key=True,
-            default=uuid.uuid4,
-            editable=False
-            )
-    name = models.CharField(max_length=50, unique=True)
+    id = models.UUIDField(primary_key = True,
+                          default     = uuid.uuid4,
+                          editable    = False)
+
+    name        = models.CharField(max_length=50, unique=True)
     description = models.TextField()
-    password = models.CharField(max_length=64)  # , widget=PasswordInput())
+    password    = models.CharField(max_length=64)  # , widget=PasswordInput())
 
     def save(self, *arg, **kwargs):
-        hash_str = f"{self.password}.{self.name}"
+        passlen = len(self.password)
+        numbers = sum(c.isdigit() for c in self.password)
+        letters = sum(c.isalpha() for c in self.password)
+        spaces  = sum(c.isspace() for c in self.password)
+
+        hash_str = f"{self.password}.{passlen}.{letters}.{spaces}"
         hash_value = hashlib.sha256(hash_str.encode("utf-8")).hexdigest()
 
         self.password = hash_value
@@ -99,13 +103,13 @@ class Actuator_type(models.Model):
 
 class Actuator(models.Model):
 
-    id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
-    name            = models.CharField(max_length = 50)
-    mqtt_topic      = models.CharField(max_length = 64)
-    crop            = models.ForeignKey(Crop, on_delete = models.CASCADE)
-    actuator_type   = models.ForeignKey(Actuator_type, on_delete = models.CASCADE)
-    start_time      = models.TimeField(auto_now = False, auto_now_add = False, blank = True, null = True)
-    end_time        = models.TimeField(auto_now = False, auto_now_add = False, blank = True, null = True)
+    id            = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
+    name          = models.CharField(max_length = 50)
+    mqtt_topic    = models.CharField(max_length = 64)
+    crop          = models.ForeignKey(Crop, on_delete = models.CASCADE)
+    actuator_type = models.ForeignKey(Actuator_type, on_delete = models.CASCADE)
+    start_time    = models.TimeField(auto_now = False, auto_now_add = False, blank = True, null = True)
+    end_time      = models.TimeField(auto_now = False, auto_now_add = False, blank = True, null = True)
 
     def __str__(self):
         return f"{self.name}.{self.mqtt_topic}"
@@ -163,17 +167,23 @@ class Permission(models.Model):
         unique_together = ('user', 'org', 'crop', 'permission_type',)
 
     def __str__(self):
-        return f"{self.user.username} has {self.permission_type} permission for {self.org.name}"
+
+        if self.crop == None:
+            return f"'{self.user.username}' has '{self.permission_type}' permission for '{self.org.name}'"
+        else:
+            return f"'{self.user.username}' has '{self.permission_type}' permission for '{self.org.name}' on crop '{self.crop.name}'"
 
     def save(self, *args, **kwargs):
         conditions = {
-            'granted': int(self.granted),
+            #'granted': int(self.granted),
             'user_id': self.user_id,
             'organization_id': self.org_id,
             'permission_type': self.permission_type,
         }
+
         if self.crop_id is not None:
             conditions['crop_id'] = self.crop_id
+
         self._id = '_'.join(str(v) for v in conditions.values())
         super().save(*args, **kwargs)
 

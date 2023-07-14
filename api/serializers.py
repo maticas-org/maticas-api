@@ -84,7 +84,7 @@ class ConditionSerializerFullRestricted(serializers.ModelSerializer):
 # ===========================
 class MeasurementSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ( "datetime",  "crop", "value", "variable",)
+        fields = ("crop", "datetime", "variable", "value",)
         model = Measurement
 
 class MeasurementSerializerFullRestricted(serializers.ModelSerializer):

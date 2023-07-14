@@ -16,6 +16,7 @@ from structure.models import *
 # ==== Org related ==
 # ===================
 class OrgAPICreate(generics.CreateAPIView):
+    permission_classes  = (OrgPermission,)
     queryset         = Org.objects.all()
     serializer_class = OrgSerializer
 
@@ -38,18 +39,17 @@ class OrgAPICreate(generics.CreateAPIView):
 
 
 class OrgAPIDetail(generics.RetrieveAPIView):
-    permission_classes  = (IsUserAllowed,)
+    permission_classes  = (OrgPermission,)
     queryset            = Org.objects.all()
     serializer_class    = OrgSerializerRestricted
 
 class OrgAPIDetailModify(generics.RetrieveUpdateAPIView):
-    permission_classes  = (IsUserAllowed,)
+    permission_classes  = (OrgPermission,)
     queryset            = Org.objects.all()
     serializer_class    = OrgSerializer
 
 class OrgAPIDetailDelete(generics.RetrieveDestroyAPIView):
-
-    permission_classes  = (IsUserAllowed,)
+    permission_classes  = (OrgPermission,)
     queryset            = Org.objects.all()
     serializer_class    = OrgSerializerFullRestricted
 
@@ -58,21 +58,22 @@ class OrgAPIDetailDelete(generics.RetrieveDestroyAPIView):
 # ==== Crop related ==
 # ====================
 class CropAPICreate(generics.CreateAPIView):
+    permission_classes  = (CropPermission,)
     queryset         = Crop.objects.all()
     serializer_class = CropSerializer
 
 class CropAPIDetail(generics.RetrieveAPIView):
-    permission_classes  = (IsUserAllowed,)
+    permission_classes  = (CropPermission,)
     queryset            = Crop.objects.all()
     serializer_class    = CropSerializer
 
 class CropAPIDetailModify(generics.RetrieveUpdateAPIView):
-    permission_classes  = (IsUserAllowed,)
+    permission_classes  = (CropPermission,)
     queryset            = Crop.objects.all()
     serializer_class    = CropSerializer
 
 class CropAPIDetailDelete(generics.RetrieveDestroyAPIView):
-    permission_classes  = (IsUserAllowed,)
+    permission_classes  = (CropPermission,)
     queryset            = Crop.objects.all()
     serializer_class    = CropSerializerFullRestricted
 
@@ -108,41 +109,46 @@ class Actuator_typeAPIDetailDelete(generics.RetrieveDestroyAPIView):
 # ==== Actuator related ==
 # ========================
 class ActuatorAPICreate(generics.CreateAPIView):
+    permission_classes  = (ActuatorPermission,)
     queryset            = Actuator.objects.all()
     serializer_class    = ActuatorSerializer
-    permission_classes  = (IsAdminUser,)
 
 class ActuatorAPIDetail(generics.RetrieveAPIView):
+    permission_classes  = (ActuatorPermission,)
     queryset         = Actuator.objects.all()
     serializer_class = ActuatorSerializer
 
 class ActuatorAPIDetailModify(generics.RetrieveUpdateAPIView):
+    permission_classes  = (ActuatorPermission,)
     queryset            = Actuator.objects.all()
     serializer_class    = ActuatorSerializer
-    permission_classes  = (IsAdminUser,)
 
 class ActuatorAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    permission_classes  = (ActuatorPermission,)
     queryset            = Actuator.objects.all()
     serializer_class    = ActuatorSerializerFullRestricted
-    permission_classes  = (IsAdminUser,)
 
 
 # =========================
 # ==== Condition related ==
 # =========================
 class ConditionAPICreate(generics.CreateAPIView):
+    permission_classes  = (ConditionPermission,)
     queryset         = Condition.objects.all()
     serializer_class = ConditionSerializer
 
 class ConditionAPIDetail(generics.RetrieveAPIView):
+    permission_classes  = (ConditionPermission,)
     queryset         = Condition.objects.all()
     serializer_class = ConditionSerializer
 
 class ConditionAPIDetailModify(generics.RetrieveUpdateAPIView):
+    permission_classes  = (ConditionPermission,)
     queryset         = Condition.objects.all()
     serializer_class = ConditionSerializer
 
 class ConditionAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    permission_classes  = (ConditionPermission,)
     queryset         = Condition.objects.all()
     serializer_class = ConditionSerializerFullRestricted
 
@@ -151,18 +157,22 @@ class ConditionAPIDetailDelete(generics.RetrieveDestroyAPIView):
 # ==== Measurement related ==
 # ===========================
 class MeasurementAPICreate(generics.CreateAPIView):
+    permission_classes  = (MeasurementPermission,)
     queryset         = Measurement.objects.all()
     serializer_class = MeasurementSerializer
 
 class MeasurementAPIDetail(generics.RetrieveAPIView):
+    permission_classes  = (MeasurementPermission,)
     queryset         = Measurement.objects.all()
     serializer_class = MeasurementSerializer
 
 class MeasurementAPIDetailModify(generics.RetrieveUpdateAPIView):
+    permission_classes  = (MeasurementPermission,)
     queryset         = Measurement.objects.all()
     serializer_class = MeasurementSerializer
 
 class MeasurementAPIDetailDelete(generics.RetrieveDestroyAPIView):
+    permission_classes  = (MeasurementPermission,)
     queryset         = Measurement.objects.all()
     serializer_class = MeasurementSerializerFullRestricted
 

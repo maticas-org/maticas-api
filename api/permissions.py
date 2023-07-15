@@ -108,7 +108,7 @@ class OrgPermission(CustomPermissionBaseClass):
         #then the user won't be allowed to create a new org, because 
         #one user can only have one org.
         permissions = Permission.objects.filter(user = user, crop__isnull = True)
-        print(f"checking if {user} can post... permissions: {permissions}")
+        print(f"checking if {user} can post... permissions: {permissions}, can post: {permissions.count() == 0}")
 
         return permissions.count() == 0
 

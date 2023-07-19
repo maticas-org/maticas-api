@@ -29,7 +29,9 @@ class CustomBaseTestCase(APITestCase):
         self.condition = self.create_condition(self.crop, self.variable, 0, 100)
         self.actuator_type = self.create_actuator_type('Test Actuator Type', 'Test actuator type description')
         self.actuator = self.create_actuator('Test Actuator', 'test/topic', self.crop, self.actuator_type)
-        self.measurement = self.create_measurement(self.crop, '2023-05-28 10:00:00', 50, self.variable)
+        self.measurement1 = self.create_measurement(self.crop, '2023-05-28 10:00:00', 50, self.variable)
+        self.measurement2 = self.create_measurement(self.crop, '2023-05-28 10:01:00', 51, self.variable)
+        self.measurement3 = self.create_measurement(self.crop, '2023-05-28 10:02:00', 51, self.variable)
         self.permission1 = self.create_permission(self.user, self.org, self.crop, 'view', True)
         self.permission2 = self.create_permission(self.user, self.org, None, 'view', True)
 

@@ -3,8 +3,71 @@ from structure.models import *
 
 
 #======================================================================#
-#                   Custom Permissions Base Class
+#                   Custom Permissions Classes
 #======================================================================#
+
+class CustomListPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        """
+            This method is first executed, and if there is a need to get an object 
+            from the database and do something with it, it passes over to 
+            'has_object_permission' method
+        """
+        
+        if request.user.is_authenticated:
+            print(f"user {request.user} authenticated, checking ...")
+            return self.has_permission_for_action(request, view)
+
+        elif request.user.is_anonymous or not request.user.is_active:
+            print(f"user {request.user} is anonymous or inactive")
+            return False
+
+        return False
+
+
+    def has_object_permission(self, request, view, obj):
+        return False;
+
+    def has_permission_for_action(self, request, view):
+
+        # get the pertinent permissions the user has for executing actions
+        # on this model
+        permissions = self.get_permission_set_for_actions(request.user, view)
+
+        # If there are permissions, check if the requested method is possible
+        if permissions.exists():
+            return self.is_allowed(request.method, permissions)
+        else:
+            return False
+
+    def get_permission_set_for_actions(self, user, view):
+            
+        crop_id = view.kwargs.get('crop_id')
+        return Permission.objects.filter(user = user, crop = crop_id, crop__isnull = False, granted = True)
+
+    def is_allowed(self, method, permission_set) -> bool:
+
+        if not permission_set:
+            print("not allowed, there are no permissions")
+            return False
+
+        allowed_methods = {
+            'GET': 'view',
+        }
+
+        required_permission_type = allowed_methods.get(method)
+        print(f"required permission type: {required_permission_type}")
+        print(f"permission set: {permission_set.filter(permission_type=required_permission_type)}")
+
+        if required_permission_type:
+            return permission_set.filter(permission_type=required_permission_type).exists()
+        else:
+            print("not allowed, unsupported action")
+            return False
+
+    
+
 
 class CustomPermissionBaseClass(permissions.BasePermission):
 
@@ -35,32 +98,19 @@ class CustomPermissionBaseClass(permissions.BasePermission):
         """
         return self.has_permission_for_action(request, view)
 
-
-    def get_permission_set_for_actions(self, user):
-
-        return Permission.objects.filter(user = user, crop__isnull = True, granted = True)
-
-
     def get_org_id(self, view):
         return view.kwargs.get('pk')
 
+    def get_permission_set_for_actions(self, user, view):
+
+        org_id = self.get_org_id(view)
+        return Permission.objects.filter(user = user, crop__isnull = True, org = org_id, granted = True)
 
     def has_permission_for_action(self, request, view):
 
         # get the pertinent permissions the user has for executing actions
         # on this model
         permissions = self.get_permission_set_for_actions(request.user)
-
-        # Assuming the organization ID is provided in the request data
-        org_id = self.get_org_id(view)
-        
-        # Ensure the user is trying to add a crop to the org they belong to
-        if org_id:
-            permissions = permissions.filter(org=org_id)
-            print(f"user has permissions {permissions}")
-        else:
-            print("No org id provided, bad request")
-            return False
 
         # If there are permissions, check if the requested method is possible
         if permissions.exists():
@@ -113,7 +163,6 @@ class OrgPermission(CustomPermissionBaseClass):
         return permissions.count() == 0
 
 
-
     def has_permission_for_action(self, request, view):
 
         if request.method == 'POST':
@@ -121,20 +170,7 @@ class OrgPermission(CustomPermissionBaseClass):
 
         else:
 
-            #get the permissions the user has over some org
-            org_permissions = Permission.objects.filter(user = request.user)\
-                                                .filter(crop__isnull = True)\
-                                                .filter(granted = True)
-
-            #Assuming the organization ID is provided in the request data
-            org_id = self.get_org_id(view)  
-            
-            #Ensure the user is trying to add a crop to the org they belong to
-            if org_id:
-                org_permissions = org_permissions.filter(org = org_id)
-            else:
-                return False
-
+            org_permissions = self.get_permission_set_for_actions(request.user, view)
 
             #if there are permissions then check if the requested action 
             #is possible 
@@ -166,7 +202,7 @@ class CropPermission(CustomPermissionBaseClass):
         return permissions.count() == 1
 
 
-    def get_org_id(self, request, view):
+    def get_org_id(self, view):
         crop_id = view.kwargs.get('pk')
         
         if crop_id:
@@ -184,21 +220,7 @@ class CropPermission(CustomPermissionBaseClass):
             return self.can_post(request.user)
 
         else:
-
-            #get the permissions the user has over some org
-            org_permissions = Permission.objects.filter(user = request.user)\
-                                                .filter(crop__isnull = True)\
-                                                .filter(granted = True)
-
-            #Assuming the organization ID is provided in the request data
-            org_id = self.get_org_id(request, view)  
-            
-            #Ensure the user is trying to add a crop to the org they belong to
-            if org_id:
-                org_permissions = org_permissions.filter(org = org_id)
-            else:
-                return False
-
+            org_permissions = self.get_permission_set_for_actions(request.user, view)
 
             #if there are permissions then check if the requested action 
             #is possible 
@@ -250,11 +272,12 @@ class ActuatorPermission(CustomPermissionBaseClass):
     def get_permission_set_for_actions(self, user, view):
 
         actuator_id = view.kwargs.get('pk')
+        org_id = self.get_org_id(view)
 
         if actuator_id:
             try:
                 crop = Actuator.objects.get(id = actuator_id).crop
-                return Permission.objects.filter(user = user, crop = crop, granted = True)
+                return Permission.objects.filter(user = user, crop = crop, org = org_id, granted = True)
 
             except Crop.DoesNotExist:
                 return None
@@ -271,15 +294,6 @@ class ActuatorPermission(CustomPermissionBaseClass):
             #get the permissions the user has over the crop 
             #they want to add/mod/del an actuator to
             permissions = self.get_permission_set_for_actions(request.user, view)
-
-            #get the org id from the request
-            org_id = self.get_org_id(view)  
-            
-            #Ensure the user is trying to add a crop to the org they belong to
-            if org_id and permissions:
-                permissions = permissions.filter(org = org_id)
-            else:
-                return False
 
             #if there are permissions then check if the requested action 
             #is possible 
@@ -455,3 +469,12 @@ class MeasurementPermission(CustomPermissionBaseClass):
             else:
                 return False
 
+
+
+
+class MeasurementListPermission(CustomListPermission):
+
+    def get_permission_set_for_actions(self, user, view):
+            
+        crop_id = view.kwargs.get('crop_id')
+        return Permission.objects.filter(user = user, crop = crop_id, crop__isnull = False, granted = True)

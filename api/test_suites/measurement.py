@@ -48,7 +48,7 @@ class MeasurementEndpointCRUD(CustomBaseTestCase):
 
         print("Testing measurement detail")
 
-        args1 = {'pk': self.measurement.id,}
+        args1 = {'pk': self.measurement1.id,}
         url = reverse("api:measurement_detail", kwargs = args1)
 
         #request as anonymous user
@@ -64,6 +64,7 @@ class MeasurementEndpointCRUD(CustomBaseTestCase):
         #which has view permissions over the crop
         self.login_as_normal_user()
         response = self.client.get(url)
+        #print(f"response.dataAAAAAAAAAAAA: {response.data}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         #request as normal user belonging to the organization
@@ -80,7 +81,7 @@ class MeasurementEndpointCRUD(CustomBaseTestCase):
     def test_measurement_modication(self):
 
         print("Testing measurement modification")
-        args1 = {'pk': self.measurement.id,}
+        args1 = {'pk': self.measurement1.id,}
         args2 = {"crop": self.crop.id,
                  "datetime": "2025-01-01T00:00:00Z",
                  "variable": self.variable.id,
@@ -119,7 +120,7 @@ class MeasurementEndpointCRUD(CustomBaseTestCase):
     def test_measurement_deletion(self):
 
         print("Testing measurement deletion")
-        args1 = {'pk': self.measurement.id,}
+        args1 = {'pk': self.measurement1.id,}
         url = reverse("api:measurement_delete", kwargs = args1)
 
         #try to delete as a anonymous user
@@ -147,3 +148,69 @@ class MeasurementEndpointCRUD(CustomBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         self.client.logout()
+
+    def test_measurement_range(self):
+        print("Testing measurement range")
+        args1 = {'crop_id': self.crop.id,
+                 'start_time': "2022-01-01T00:00:00Z",
+                 'end_time': "2025-01-02T00:00:00Z"}
+
+        url = reverse("api:measurement_range", kwargs = args1)
+
+        #try to get as a anonymous user
+        response = self.client.get( url )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        #try to get as a user from another org
+        self.login_as_other_user()
+        response = self.client.get( url )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        #try to get measurements as a user with view permissions over the
+        #crop 
+        self.login_as_normal_user()
+        response = self.client.get( url )
+        #print(f"response.dataAAAAAAAAAAAA: {response.data}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(len(response.data), 0)
+
+        #try to get measurements as a user with out view permissions over the
+        #crop
+        self.permission1.delete()
+        response = self.client.get( url )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.client.logout()
+
+    def test_measurement_get_all(self):
+        print("Testing measurement get all")
+        args1 = {'crop_id': self.crop.id,}
+
+        url = reverse("api:measurement_all", kwargs = args1)
+
+        #try to get as a anonymous user
+        response = self.client.get( url )  
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        #try to get as a user from another org
+        self.login_as_other_user()
+        response = self.client.get( url )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        #try to get measurements as a user with view permissions over the
+        #crop 
+        self.login_as_normal_user()
+        response = self.client.get( url )
+        #print(f"response.dataAAAAAAAAAAAA: {response.data}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(len(response.data), 0)
+
+        #try to get measurements as a user with out view permissions over the
+        #crop
+        self.permission1.delete()
+        response = self.client.get( url )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.client.logout()
+
+

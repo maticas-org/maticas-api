@@ -176,6 +176,50 @@ class MeasurementAPIDetailDelete(generics.RetrieveDestroyAPIView):
     queryset         = Measurement.objects.all()
     serializer_class = MeasurementSerializerFullRestricted
 
+class MeasurementAPIListByTimeRange(generics.ListAPIView):
+    permission_classes  = (MeasurementListPermission,)
+    serializer_class = MeasurementSerializer
+
+    def get_queryset(self):
+        # Get the start and end times from the request parameters (e.g., query parameters)
+        start_time = self.kwargs.get('start_time', None)
+        end_time = self.kwargs.get('end_time', None)
+        crop = self.kwargs.get('crop_id', None)
+
+        if (start_time is None) or (end_time is None) or (crop is None):
+            # Return an empty queryset if the time range is not specified
+            return Measurement.objects.none()
+
+        # Validate and convert the time range to Python datetime objects
+        try:
+            start_time = timezone.datetime.fromisoformat(start_time)
+            end_time = timezone.datetime.fromisoformat(end_time)
+        except (TypeError, ValueError):
+            # Return an empty queryset if the time range is invalid
+            return Measurement.objects.none()
+
+        # Query the measurements within the specified time range
+        queryset = Measurement.objects.filter(datetime__range=(start_time, end_time), crop=crop).order_by('datetime')
+        return queryset
+
+
+
+class MeasurementAPIListAll(generics.ListAPIView):
+    permission_classes  = (MeasurementListPermission,)
+    serializer_class = MeasurementSerializer
+
+    def get_queryset(self):
+        # Get the start and end times from the request parameters (e.g., query parameters)
+        crop = self.kwargs.get('crop_id', None)
+
+        if (crop is None):
+            # Return an empty queryset if the time range is not specified
+            return Measurement.objects.none()
+
+        # Query the measurements within the specified time range
+        queryset = Measurement.objects.filter(crop=crop).order_by('datetime')
+        return queryset
+
 
 # ========================
 # ==== Variable related ==

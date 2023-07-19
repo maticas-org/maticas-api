@@ -36,10 +36,13 @@ urlpatterns = [
     path("condition/del/<str:pk>/", ConditionAPIDetailDelete.as_view(), name="condition_delete"),     # DELETE
 
     # ==== Measurement related
-    path("measurement/new/",          MeasurementAPICreate.as_view(),       name="measurement_create"),     # POST
-    path("measurement/<str:pk>/",     MeasurementAPIDetail.as_view(),       name="measurement_detail"),     # GET
-    path("measurement/mod/<str:pk>/", MeasurementAPIDetailModify.as_view(), name="measurement_modify"),     # PUT
-    path("measurement/del/<str:pk>/", MeasurementAPIDetailDelete.as_view(), name="measurement_delete"),     # DELETE
+    path("measurement/new/",               MeasurementAPICreate.as_view(),       name="measurement_create"),     # POST
+    path("measurement/<str:pk>/",          MeasurementAPIDetail.as_view(),       name="measurement_detail"),     # GET
+    path("measurement/mod/<str:pk>/",      MeasurementAPIDetailModify.as_view(), name="measurement_modify"),     # PUT
+    path("measurement/del/<str:pk>/",      MeasurementAPIDetailDelete.as_view(), name="measurement_delete"),     # DELETE
+    path("measurement/all/<uuid:crop_id>/", MeasurementAPIListAll.as_view(),      name="measurement_all"),        # GET ALL
+    path("measurement/range/<str:crop_id>/<str:start_time>/<str:end_time>/", MeasurementAPIListByTimeRange.as_view(), name="measurement_range"), #GET
+
 
     # ==== Variable related
     path("variable/new/",          VariableAPICreate.as_view(),       name="variable_create"),     # POST

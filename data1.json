@@ -1,0 +1,13 @@
+[
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:21:28","data":{"temperature": 22.20, "humidity": 52.60}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:22:46","data":{"temperature": 22.22, "humidity": 52.60}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:22:46","data":{"temperature": 22.22, "humidity": 52.60}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:25:20","data":{"temperature": 22.24, "humidity": 52.60}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:25:20","data":{"temperature": 22.28, "humidity": 52.60}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:27:53","data":{"temperature": 22.30, "humidity": 52.60}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:27:53","data":{"temperature": 22.30, "humidity": 52.00}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:30:27","data":{"temperature": 22.30, "humidity": 51.80}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:30:27","data":{"temperature": 22.30, "humidity": 51.80}},
+    {"type":2,"statusCode":200,"timestamp":"2000-1-12 1:33:1","data":{"temperature": 22.30, "humidity": 51.80}}
+]
+

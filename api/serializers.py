@@ -92,6 +92,23 @@ class MeasurementSerializerFullRestricted(serializers.ModelSerializer):
         fields = ()
         model = Measurement
 
+class BatchMeasurementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Measurement
+        fields = ("crop", "datetime", "variable", "value")
+
+    type = serializers.IntegerField()
+    statusCode = serializers.IntegerField()
+    timestamp = serializers.DateTimeField()
+    data = serializers.DictField()
+
+    def create(self, validated_data):
+        return Measurement.objects.create(
+            crop=validated_data['data']['crop'],
+            datetime=validated_data['timestamp'],
+            variable=validated_data['data']['variable'],
+            value=validated_data['data']['value']
+        )
 
 # ========================
 # ==== Variable related ==

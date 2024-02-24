@@ -221,6 +221,27 @@ class MeasurementAPIListAll(generics.ListAPIView):
         return queryset
 
 
+
+class MeasurementBatchAPIView(generics.CreateAPIView): # POST
+    permission_classes  = (MeasurementPermission,)
+    queryset         = Measurement.objects.all()
+    serializer_class = BatchMeasurementSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, many=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
 # ========================
 # ==== Variable related ==
 # ========================

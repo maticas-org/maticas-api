@@ -25,7 +25,7 @@ SECRET_KEY = 'h%csmp@r-zua2gt$!+%5xugg+ljt34x*!qrn43(%z&)58xeoq*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '*']
 
 
 GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     # Local
     'structure.apps.StructureConfig',
     'api.apps.ApiConfig',
+
+    # Swagger
+    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {

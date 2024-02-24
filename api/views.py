@@ -6,6 +6,8 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.utils.dateparse import parse_datetime
+
 
 from .serializers import *
 from .permissions import *
@@ -192,8 +194,9 @@ class MeasurementAPIListByTimeRange(generics.ListAPIView):
 
         # Validate and convert the time range to Python datetime objects
         try:
-            start_time = timezone.datetime.fromisoformat(start_time)
-            end_time = timezone.datetime.fromisoformat(end_time)
+            start_time = parse_datetime(start_time)
+            end_time = parse_datetime(end_time)
+
         except (TypeError, ValueError):
             # Return an empty queryset if the time range is invalid
             return Measurement.objects.none()

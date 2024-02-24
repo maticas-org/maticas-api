@@ -151,6 +151,7 @@ class MeasurementEndpointCRUD(CustomBaseTestCase):
 
     def test_measurement_range(self):
         print("Testing measurement range")
+
         args1 = {'crop_id': self.crop.id,
                  'start_time': "2022-01-01T00:00:00Z",
                  'end_time': "2025-01-02T00:00:00Z"}
@@ -170,7 +171,6 @@ class MeasurementEndpointCRUD(CustomBaseTestCase):
         #crop 
         self.login_as_normal_user()
         response = self.client.get( url )
-        #print(f"response.dataAAAAAAAAAAAA: {response.data}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotEqual(len(response.data), 0)
 

@@ -147,6 +147,5 @@ class ModelTestCase(TestCase):
         permission = Permission.objects.get(permission_type='edit')
         self.assertEqual(
             str(permission),
-            f"{permission.user.username} has {permission.permission_type} permission for {permission.org.name}"
+            f"'{permission.user.username}' has '{permission.permission_type}' permission for '{permission.org.name}' on crop '{self.crop.name}'"
         )
-

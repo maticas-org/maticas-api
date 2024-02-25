@@ -40,9 +40,9 @@ urlpatterns = [
     path("measurement/<str:pk>/",          MeasurementAPIDetail.as_view(),       name="measurement_detail"),     # GET
     path("measurement/mod/<str:pk>/",      MeasurementAPIDetailModify.as_view(), name="measurement_modify"),     # PUT
     path("measurement/del/<str:pk>/",      MeasurementAPIDetailDelete.as_view(), name="measurement_delete"),     # DELETE
-    path("measurement/all/<uuid:crop_id>/", MeasurementAPIListAll.as_view(),      name="measurement_all"),        # GET ALL
+    path("measurement/all/<uuid:crop_id>/", MeasurementAPIListAll.as_view(),      name="measurement_all"),       # GET ALL
     path("measurement/range/<str:crop_id>/<str:start_time>/<str:end_time>/", MeasurementAPIListByTimeRange.as_view(), name="measurement_range"), #GET
-    # path("measurement/read_batch", MeasurementBatchAPIView.as_view(), name="mesurement_batch_view"), 
+    path("measurement/read_batch", MeasurementBatchAPIView.as_view(), name="mesurement_batch_view"),             # POST
 
 
     # ==== Variable related

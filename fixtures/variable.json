@@ -1,0 +1,47 @@
+[
+{
+  "model": "structure.variable",
+  "pk": "0e710d82-b55e-47a8-83d8-874d042dada4",
+  "fields": {
+    "name": "Electroconductivity",
+    "units": "mS/cm",
+    "description": "How much water resists the electrical current flow, as indicator of how much nutrient is disolved."
+  }
+},
+{
+  "model": "structure.variable",
+  "pk": "3a56695b-005c-48d3-8005-a76f5d0dc9f6",
+  "fields": {
+    "name": "Ambient Temperature",
+    "units": "°C",
+    "description": "Air temperature in celcius degrees."
+  }
+},
+{
+  "model": "structure.variable",
+  "pk": "5d706a1a-86b0-4bca-b2c8-6a9e52107f27",
+  "fields": {
+    "name": "Air relative humidity",
+    "units": "%",
+    "description": "Air relative humidity in %."
+  }
+},
+{
+  "model": "structure.variable",
+  "pk": "baad6527-79b0-49d0-ab11-741a76bd0154",
+  "fields": {
+    "name": "Electroconductivity",
+    "units": "PPM",
+    "description": "Express the concentration of a substance in a solution, is commonly used to measure the concentration of dissolved nutrients in the nutrient solution that is used to feed the plants."
+  }
+},
+{
+  "model": "structure.variable",
+  "pk": "cc692cfd-0e85-4db5-9faf-f46ebd4d0d36",
+  "fields": {
+    "name": "Ambient Temperature",
+    "units": "°F",
+    "description": "Ambient temperature in Fahrenheit degrees."
+  }
+}
+]

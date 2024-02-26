@@ -1,0 +1,18 @@
+[
+{
+  "model": "structure.actuator_type",
+  "pk": "e0bb8163-c127-43d8-aec3-72cc58e8bdd5",
+  "fields": {
+    "name": "On/Off",
+    "description": "Actuator which is handled only as on or off, for example a light bulb which goes on between 6 PM and 11 PM, the rest of the time is off."
+  }
+},
+{
+  "model": "structure.actuator_type",
+  "pk": "f2018e6c-b6d9-4c03-885a-399d1da3cf23",
+  "fields": {
+    "name": "Timed",
+    "description": "An actuator which can be handled as On/Off but with working periods, meaning for example: A water pump turns on every 30 minutes, works for 10 minutes and then goes off. Different from a light bulb which turns on at 7 PM and goes off at 10 PM, for example."
+  }
+}
+]

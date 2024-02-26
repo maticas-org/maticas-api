@@ -397,10 +397,19 @@ class MeasurementPermission(CustomPermissionBaseClass):
     def can_post(self, user, view):
         
         #get the crop id from the request
-        crop_id = view.request.data.get('crop')
+        if isinstance(view.request.data, list):
+            crop_ids = [individual_request.get('crop') for individual_request in view.request.data]
+            all_permissions = [] 
 
-        if crop_id:
-                
+            for crop_id in crop_ids:
+                permissions = Permission.objects.filter(user = user, crop = crop_id, permission_type = 'add', granted = True)
+                all_permissions.append(permissions.count() == 1)
+
+            return all(all_permissions)
+        else:
+            crop_id = view.request.data.get('crop')
+
+            if crop_id:
                 #if the user has 'add' permissions over the crop they want to add
                 #a condition to, then they can post
                 permissions = Permission.objects.filter(user = user, crop = crop_id, permission_type = 'add', granted = True)

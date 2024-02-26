@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from structure.models import *
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 # ===================
 # ==== Org related ==
@@ -92,30 +92,11 @@ class MeasurementSerializerFullRestricted(serializers.ModelSerializer):
         fields = ()
         model = Measurement
 
-class BatchMeasurementSerializer(serializers.ModelSerializer):
+class MeasurementBatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Measurement
-        fields = ("crop", "datetime", "variable", "value", "type", "statusCode", "timestamp", "data")
+        fields = ("datetime", "crop", "variable", "value")
 
-    type = serializers.IntegerField()
-    statusCode = serializers.IntegerField()
-    timestamp = serializers.DateTimeField()
-    data = serializers.DictField()
-
-    def create(self, validated_data):
-        measurements: List[Measurement] = []
-        data = validated_data.get(data, None)
-
-        if data:
-            for variable_uiid_key, variable_value in data.items():
-                m = Measurement.objects.create(crop     = validated_data["crop"],
-                                            datetime = validated_data["timestamp"],
-                                            variable = variable_uiid_key, 
-                                            value    = variable_value)
-                measurements.append(m)
-            return measurements
-        else:
-            return None
 
 # ========================
 # ==== Variable related ==

@@ -228,7 +228,7 @@ class MeasurementAPIListAll(generics.ListAPIView):
 class MeasurementBatchAPIView(generics.CreateAPIView): # POST
     permission_classes  = (MeasurementPermission,)
     queryset         = Measurement.objects.all()
-    serializer_class = BatchMeasurementSerializer
+    serializer_class = MeasurementBatchSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, many=True)

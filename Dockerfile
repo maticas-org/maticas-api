@@ -10,16 +10,15 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # # Ensures our console output is not buffered by Docker
 ENV PYTHONUNBUFFERED 1
 
-# Set work directory
+# Set work directory and copy source code
 WORKDIR /api_source
+COPY . .
 
 # Install dependencies
-COPY ./requirements.txt .
 RUN pip install -r requirements.txt
+
+# Set up
 RUN python manage.py makemigrations
 RUN python manage.py migrate
 RUN python manage.py load fixtures/variable
 RUN python manage.py load fixtures/actuator_type
-
-# Copy project
-COPY . .

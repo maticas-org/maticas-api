@@ -20,5 +20,5 @@ RUN pip install -r requirements.txt
 # Set up
 RUN python manage.py makemigrations
 RUN python manage.py migrate
-RUN python manage.py load fixtures/variable
-RUN python manage.py load fixtures/actuator_type
+RUN python manage.py loaddata fixtures/variable
+RUN python manage.py loaddata fixtures/actuator_type

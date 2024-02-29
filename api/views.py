@@ -2,7 +2,9 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.authtoken.models import Token #ADDED
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication #ADDED
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -223,12 +225,10 @@ class MeasurementAPIListAll(generics.ListAPIView):
         queryset = Measurement.objects.filter(crop=crop).order_by('datetime')
         return queryset
 
-
-
 class MeasurementBatchAPIView(generics.CreateAPIView): # POST
-    permission_classes  = (MeasurementPermission,)
     queryset         = Measurement.objects.all()
     serializer_class = MeasurementBatchSerializer
+    permission_classes  = [MeasurementPermission,]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, many=True)
@@ -238,10 +238,6 @@ class MeasurementBatchAPIView(generics.CreateAPIView): # POST
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 
 
 
@@ -298,16 +294,32 @@ class UserLoginView(APIView):
         if serializer.is_valid():
             email = serializer.validated_data['username']
             password = serializer.validated_data['password']
-            user = authenticate(username=email, password=password)
+            user  = authenticate(username=email, password=password)
+            
+            #try to get the token, if not existent create it
+            try:
+                token = Token.objects.get(user=user)
+            except Token.DoesNotExist:
+                token = Token.objects.create(user=user)
 
             if user is not None:
                 login(request, user)
-                return Response({'detail': 'Logged in successfully.'}, status=status.HTTP_200_OK)
+                data = {'detail': 'Logged in successfully.', 'token': token.key}
+                return Response(data, status=status.HTTP_200_OK)
             else:
                 #print(f"{user}:{email}:{password}")
                 return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ExampleView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
-
+    def get(self, request, format=None):
+        content = {
+            'user': str(request.user),  # `django.contrib.auth.User` instance.
+            'auth': str(request.auth),  # None
+            'authtoken': str(request.user.auth_token),  # None
+        }
+        return Response(content)

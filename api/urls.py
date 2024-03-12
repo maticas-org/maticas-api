@@ -41,7 +41,7 @@ urlpatterns = [
     path("measurement/mod/<str:pk>/",       MeasurementAPIDetailModify.as_view(), name="measurement_modify"),     # PUT
     path("measurement/del/<str:pk>/",       MeasurementAPIDetailDelete.as_view(), name="measurement_delete"),     # DELETE
     path("measurement/all/<uuid:crop_id>/", MeasurementAPIListAll.as_view(),      name="measurement_all"),        # GET ALL
-    path("measurement/write_batch/",        MeasurementBatchAPIView.as_view(),    name="mesurement_batch_view"),  # POST
+    path("measurement/write_batch",         write_batch,                          name="measurement_write_batch"), # POST
     path("measurement/range/<str:crop_id>/<str:start_time>/<str:end_time>/", MeasurementAPIListByTimeRange.as_view(), name="measurement_range"), #GET
 
     # ==== Variable related
@@ -56,7 +56,7 @@ urlpatterns = [
     path("user/token_auth/", obtain_auth_token,        name="user_api_token_auth"),
 
     # ==== Example
-    path("example/", ExampleView.as_view(), name="example"),
+    #path("example/", ExampleView.as_view(), name="example"),
 ]
 
 

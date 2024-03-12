@@ -421,7 +421,35 @@ class MeasurementPermission(CustomPermissionBaseClass):
                 print(f"checking if {user} can post... permissions: {permissions} over crop {crop_id}")
     
                 return permissions.count() == 1
-        
+
+    @staticmethod
+    def can_post_from_data(user, data):
+        print("-"*10) 
+        print(user, data)
+
+        #get the crop id from the request
+        if isinstance(data, list):
+            crop_ids = [individual_request.get('crop') for individual_request in data]
+            all_permissions = [] 
+
+            print("checking if user can post multiple measurements...")
+
+            for crop_id in crop_ids:
+                permissions = Permission.objects.filter(user = user, crop = crop_id, permission_type = 'add', granted = True)
+                all_permissions.append(permissions.count() == 1)
+
+            print(f"all permissions: {all_permissions}, can post: {all(all_permissions)}")
+            return all(all_permissions)
+        else:
+            crop_id = data.get('crop')
+
+            if crop_id:
+                #if the user has 'add' permissions over the crop they want to add
+                #a condition to, then they can post
+                permissions = Permission.objects.filter(user = user, crop = crop_id, permission_type = 'add', granted = True)
+                print(f"checking if {user} can post... permissions: {permissions} over crop {crop_id}")
+    
+                return permissions.count() == 1
 
         
     def get_org_id(self, view):

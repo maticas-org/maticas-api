@@ -4,17 +4,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.authtoken.models import Token #ADDED
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication #ADDED
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication #ADDED
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.utils.dateparse import parse_datetime
 
-
 from .serializers import *
 from .permissions import *
 from structure.models import *
-
 
 # ===================
 # ==== Org related ==
@@ -208,7 +208,6 @@ class MeasurementAPIListByTimeRange(generics.ListAPIView):
         return queryset
 
 
-
 class MeasurementAPIListAll(generics.ListAPIView):
     permission_classes  = (MeasurementListPermission,)
     serializer_class = MeasurementSerializer
@@ -225,21 +224,27 @@ class MeasurementAPIListAll(generics.ListAPIView):
         queryset = Measurement.objects.filter(crop=crop).order_by('datetime')
         return queryset
 
-class MeasurementBatchAPIView(generics.CreateAPIView): # POST
-    queryset         = Measurement.objects.all()
-    serializer_class = MeasurementBatchSerializer
-    permission_classes  = [MeasurementPermission,]
+from django.http import HttpResponse
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, many=True)
 
-        if serializer.is_valid():
+@api_view(['POST'])
+def  write_batch(request):
+
+    if request.method == 'POST':
+        data = request.data
+        serializer = MeasurementSerializer(data=data, many=True)
+        has_permission = MeasurementPermission.can_post_from_data(request.user, data)
+
+        if serializer.is_valid() and has_permission:
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"detail": "OK"}, status=status.HTTP_201_CREATED)
+        elif not has_permission:
+            return Response({"detail": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+    else:
+        return Response({"detail": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
 # ========================
 # ==== Variable related ==
@@ -311,15 +316,3 @@ class UserLoginView(APIView):
                 return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class ExampleView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, format=None):
-        content = {
-            'user': str(request.user),  # `django.contrib.auth.User` instance.
-            'auth': str(request.auth),  # None
-            'authtoken': str(request.user.auth_token),  # None
-        }
-        return Response(content)

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import is_aware, make_aware, utc
 
 from structure.models import *
 from typing import List, Tuple, Dict
@@ -82,6 +84,8 @@ class ConditionSerializerFullRestricted(serializers.ModelSerializer):
 # ===========================
 # ==== Measurement related ==
 # ===========================
+
+
 class MeasurementSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ("crop", "datetime", "variable", "value",)
@@ -95,7 +99,29 @@ class MeasurementSerializerFullRestricted(serializers.ModelSerializer):
 class MeasurementBatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Measurement
-        fields = ("datetime", "crop", "variable", "value")
+        fields = ("crop", "datetime", "variable", "value",)
+
+    def to_internal_value(self, data):
+        # Copy the incoming data to avoid mutating the original input
+        mutable_data = data.copy()
+        
+        # Extract and parse the datetime field from the input data
+        datetime_str = mutable_data.get('datetime', None)
+        if datetime_str:
+            datetime_obj = parse_datetime(datetime_str)
+            
+            # Check if the datetime object is timezone aware, make it aware if not
+            if datetime_obj and not is_aware(datetime_obj):
+                datetime_obj = make_aware(datetime_obj, utc)
+            
+            # Convert the datetime to UTC if it's not already
+            datetime_obj = datetime_obj.astimezone(utc)
+            
+            # Update the mutable data with the converted datetime
+            mutable_data['datetime'] = datetime_obj
+
+        # Proceed with the default processing using the updated data
+        return super().to_internal_value(mutable_data)
 
 
 # ========================

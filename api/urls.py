@@ -10,6 +10,8 @@ urlpatterns = [
     path("org/<uuid:pk>/",     OrgAPIDetail.as_view(),       name="org_detail"),       # GET
     path("org/mod/<uuid:pk>/", OrgAPIDetailModify.as_view(), name="org_modify"),       # PUT
     path("org/del/<uuid:pk>/", OrgAPIDetailDelete.as_view(), name="org_delete"),       # DELETE
+    path("org/available/variables/<uuid:pk>/", OrgAPIAvailableVariables.as_view(), name="org_available_variables"), # GET
+    #path("org/available/zones",     OrgAPIAvailableZones.as_view(),     name="org_available_zones"),     # GET
 
     # ==== Crop related
     path("crop/new/",           CropAPICreate.as_view(),       name="crop_create"),      # POST

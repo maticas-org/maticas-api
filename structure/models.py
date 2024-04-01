@@ -11,8 +11,6 @@ from django.forms import PasswordInput
 from django.utils import timezone
 
 
-
-
 class Org(models.Model):
     id = models.UUIDField(primary_key = True,
                           default     = uuid.uuid4,
@@ -158,7 +156,7 @@ class Permission(models.Model):
     id              = models.UUIDField(primary_key = True, default = uuid.uuid4, editable    = False)
     user            = models.ForeignKey(User, on_delete = models.CASCADE)
     org             = models.ForeignKey(Org,  on_delete = models.CASCADE)
-    crop            = models.ForeignKey(Crop, null = True, on_delete = models.CASCADE)
+    crop            = models.ForeignKey(Crop, null = True, on_delete = models.CASCADE, blank = True)
     permission_type = models.CharField(max_length = 10, choices = PERMISSION_CHOICES)
     granted         = models.BooleanField(default = False)
     _id             = models.CharField(max_length = 255, editable = False, unique = True)

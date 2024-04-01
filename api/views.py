@@ -57,6 +57,19 @@ class OrgAPIDetailDelete(generics.RetrieveDestroyAPIView):
     queryset            = Org.objects.all()
     serializer_class    = OrgSerializerFullRestricted
 
+class OrgAPIAvailableVariables(generics.ListAPIView):
+    permission_classes  = (OrgPermission,)
+    serializer_class    = VariableSerializer
+
+    def get_queryset(self):
+        org_id = self.kwargs.get('org_id', None)
+        if org_id is None:
+            return Variable.objects.none()
+
+        # get the measurements of the org with unique variables
+        # traverse from measurement, look for a crop that belongs to the org, then get the variable
+        queryset = Variable.objects.filter(measurement__crop__org=org_id).distinct()
+        return queryset
 
 # ====================
 # ==== Crop related ==

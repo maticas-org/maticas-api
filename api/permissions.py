@@ -48,6 +48,10 @@ class CustomListPermission(permissions.BasePermission):
 
     def is_allowed(self, method, permission_set) -> bool:
 
+        # Automatically allow OPTIONS requests for preflight checks
+        if method == 'OPTIONS':
+            return True
+
         if not permission_set:
             print("not allowed, there are no permissions")
             return False
@@ -122,6 +126,10 @@ class CustomPermissionBaseClass(permissions.BasePermission):
     def is_allowed(self, method, permission_set) -> bool:
         """ Checks if the given permission_set allows the execution of the requested action """
 
+        # Automatically allow OPTIONS requests for preflight checks
+        if method == 'OPTIONS':
+            return True
+
         if not permission_set:
             print("not allowed, there are no permissions")
             return False
@@ -135,6 +143,7 @@ class CustomPermissionBaseClass(permissions.BasePermission):
         }
 
         required_permission_type = allowed_methods.get(method)
+        print(f"method requesting: {method}")
         print(f"required permission type: {required_permission_type}")
         print(f"permission set: {permission_set.filter(permission_type=required_permission_type)}")
 

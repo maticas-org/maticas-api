@@ -62,14 +62,27 @@ class OrgAPIAvailableVariables(generics.ListAPIView):
     serializer_class    = VariableSerializer
 
     def get_queryset(self):
-        org_id = self.kwargs.get('org_id', None)
-        if org_id is None:
-            return Variable.objects.none()
+        org_id = self.kwargs.get('pk', None)
 
-        # get the measurements of the org with unique variables
-        # traverse from measurement, look for a crop that belongs to the org, then get the variable
-        queryset = Variable.objects.filter(measurement__crop__org=org_id).distinct()
-        return queryset
+        #get the crops that an org has:
+        crops = Crop.objects.filter(org=org_id)
+        #with the crops go to the measurements and get the unique variables
+        variables = Variable.objects.filter(measurement__crop__in=crops).distinct()
+
+        return variables
+
+
+class OrgAPIAvailableZones(generics.ListAPIView):
+    permission_classes  = (OrgPermission,)
+    serializer_class    = CropSerializer
+
+    def get_queryset(self):
+        org_id = self.kwargs.get('pk', None)
+
+        #get the crops that an org has:
+        crops = Crop.objects.filter(org=org_id).distinct()
+
+        return crops
 
 # ====================
 # ==== Crop related ==

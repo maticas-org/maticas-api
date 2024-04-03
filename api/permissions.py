@@ -1,3 +1,4 @@
+import uuid
 from rest_framework import permissions 
 from structure.models import *
 
@@ -528,3 +529,58 @@ class MeasurementListPermission(CustomListPermission):
             
         crop_id = view.kwargs.get('crop_id')
         return Permission.objects.filter(user = user, crop = crop_id, crop__isnull = False, granted = True)
+
+
+
+class MeasurementRangePermission(CustomListPermission):
+
+
+    def has_permission(self, request, view):
+        """
+            This method is first executed, and if there is a need to get an object 
+            from the database and do something with it, it passes over to 
+            'has_object_permission' method
+        """
+        
+        if request.user.is_authenticated:
+            print(f"user {request.user} authenticated, checking inside MeasurementRange...")
+            return self.has_permission_for_action(request, view)
+
+        elif request.user.is_anonymous or not request.user.is_active:
+            print(f"user {request.user} is anonymous or inactive")
+            return False
+
+        return False
+
+    def get_permission_set_for_actions(self, user, view):
+            
+        # get the crop ids from the request
+        crops = view.kwargs.get('crops', None)
+        crops = crops.split(',')
+        crops = [uuid.UUID(crop) for crop in crops]
+
+        # if the user has no 'view' or 'add' permissions over each crop
+        # then they are not allowed to view the measurements
+        return crops, Permission.objects.filter(user = user, crop__in = crops, permission_type__in = ['view', 'add'], granted = True)
+
+    def has_permission_for_action(self, request, view):
+
+        #if it's a POST request, the user not allowed
+        if request.method == 'POST' or request.method == 'PUT' or request.method == 'DELETE' or request.method == 'PATCH' or request.method == 'UPDATE':
+            return False
+        elif request.method == 'OPTIONS':
+            return True
+
+        # get the pertinent permissions the user has for executing actions
+        # on this crops
+        crops, permissions = self.get_permission_set_for_actions(request.user, view)
+
+        print(f"N permissions {permissions.count()}")
+        print(f"requested crops {view.kwargs.get('crops').split(',')}")
+
+        # each crop should have a permission
+        for crop in crops:
+            if not permissions.filter(crop = crop).exists():
+                return False
+
+        return True

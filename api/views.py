@@ -233,6 +233,37 @@ class MeasurementAPIListByTimeRange(generics.ListAPIView):
         queryset = Measurement.objects.filter(datetime__range=(start_time, end_time), crop=crop).order_by('datetime')
         return queryset
 
+class MeasurementListByTimeCropsAndVariables(generics.ListAPIView):
+    permission_classes  = (MeasurementRangePermission,)
+    serializer_class = MeasurementSerializer
+
+
+    def get_queryset(self):
+        # Get the start and end times from the request parameters (e.g., query parameters)
+        start_time = self.kwargs.get('start_time', None)
+        end_time = self.kwargs.get('end_time', None)
+        variables = self.kwargs.get('variables', None)
+        crops = self.kwargs.get('crops', None)
+
+        if (start_time is None) or (end_time is None) or (variables is None) or (crops is None):
+            # Return an empty queryset if the time range is not specified
+            return Measurement.objects.none()
+
+        # Validate and convert the time range to Python datetime objects
+        try:
+            start_time = parse_datetime(start_time)
+            end_time = parse_datetime(end_time)
+            variables = variables.split(',')
+            crops = crops.split(',')
+
+        except (TypeError, ValueError):
+            # Return an empty queryset if the time range is invalid
+            return Measurement.objects.none()
+
+        # Query the measurements within the specified time range
+        queryset = Measurement.objects.filter(datetime__range=(start_time, end_time), variable__in=variables, crop__in=crops).order_by('datetime')
+        return queryset
+
 
 class MeasurementAPIListAll(generics.ListAPIView):
     permission_classes  = (MeasurementListPermission,)
@@ -249,8 +280,6 @@ class MeasurementAPIListAll(generics.ListAPIView):
         # Query the measurements within the specified time range
         queryset = Measurement.objects.filter(crop=crop).order_by('datetime')
         return queryset
-
-from django.http import HttpResponse
 
 
 @api_view(['POST'])
@@ -335,7 +364,14 @@ class UserLoginView(APIView):
 
             if user is not None:
                 login(request, user)
-                data = {'detail': 'Logged in successfully.', 'token': token.key}
+                #get the user org id
+                user_permission = Permission.objects.filter(user=user, granted=True).first()
+
+                data = {'detail': 'Logged in successfully.',
+                        'token': token.key, 
+                        'orgId': user_permission.org.id,
+                        'orgName': user_permission.org.name}
+
                 return Response(data, status=status.HTTP_200_OK)
             else:
                 #print(f"{user}:{email}:{password}")

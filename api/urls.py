@@ -44,7 +44,7 @@ urlpatterns = [
     path("measurement/del/<str:pk>/",       MeasurementAPIDetailDelete.as_view(), name="measurement_delete"),     # DELETE
     path("measurement/all/<uuid:crop_id>/", MeasurementAPIListAll.as_view(),      name="measurement_all"),        # GET ALL
     path("measurement/write_batch",         write_batch,                          name="measurement_write_batch"), # POST
-    path("measurement/range/<str:crop_id>/<str:start_time>/<str:end_time>/", MeasurementAPIListByTimeRange.as_view(), name="measurement_range"), #GET
+    path("measurement/range_flex/<str:variables>/<str:crops>/<str:start_time>/<str:end_time>/",         MeasurementListByTimeCropsAndVariables.as_view(), name="measurement_range_flex"), # GET
 
     # ==== Variable related
     path("variable/new/",           VariableAPICreate.as_view(),       name="variable_create"),     # POST

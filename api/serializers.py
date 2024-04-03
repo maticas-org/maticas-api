@@ -30,7 +30,7 @@ class OrgSerializerFullRestricted(serializers.ModelSerializer):
 # ====================
 class CropSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ("org", "name", "coordinate_latitude", "coordinate_longitude")
+        fields = ("id", "org", "name", "coordinate_latitude", "coordinate_longitude")
         model = Crop
 
 class CropSerializerFullRestricted(serializers.ModelSerializer):
@@ -44,7 +44,7 @@ class CropSerializerFullRestricted(serializers.ModelSerializer):
 # =============================
 class Actuator_typeSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ( "name", "description",)
+        fields = ("id", "name", "description",)
         model = Actuator_type
 
 class Actuator_typeSerializerFullRestricted(serializers.ModelSerializer):
@@ -129,7 +129,7 @@ class MeasurementBatchSerializer(serializers.ModelSerializer):
 # ========================
 class VariableSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ( "name", "units", "description",)
+        fields = ("id", "name", "units", "description",)
         model = Variable
 
 class VariableSerializerFullRestricted(serializers.ModelSerializer):

@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.authtoken.models import Token #ADDED
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication #ADDED
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
+
 from rest_framework.response import Response
 
 from django.contrib.auth import authenticate, login
@@ -282,12 +283,12 @@ class MeasurementAPIListAll(generics.ListAPIView):
         return queryset
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET', 'OPTIONS'])
 def  write_batch(request):
 
     if request.method == 'POST':
         data = request.data
-        serializer = MeasurementSerializer(data=data, many=True)
+        serializer = MeasurementBatchSerializer(data=data, many=True)
         has_permission = MeasurementPermission.can_post_from_data(request.user, data)
 
         if serializer.is_valid() and has_permission:
